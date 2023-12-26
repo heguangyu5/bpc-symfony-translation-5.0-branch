@@ -22,7 +22,7 @@ use Symfony\Component\Translation\Formatter\MessageFormatter;
 use Symfony\Component\Translation\Formatter\MessageFormatterInterface;
 use Symfony\Component\Translation\Loader\LoaderInterface;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @author Fabien Potencier <fabien@symfony.com>
@@ -101,10 +101,10 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         $this->hasIntlFormatter = $formatter instanceof IntlFormatterInterface;
     }
 
-    public function setConfigCacheFactory(ConfigCacheFactoryInterface $configCacheFactory)
-    {
-        $this->configCacheFactory = $configCacheFactory;
-    }
+//    public function setConfigCacheFactory(ConfigCacheFactoryInterface $configCacheFactory)
+//    {
+//        $this->configCacheFactory = $configCacheFactory;
+//    }
 
     /**
      * Adds a Loader.
@@ -269,53 +269,53 @@ class Translator implements TranslatorInterface, TranslatorBagInterface, LocaleA
         $this->loadFallbackCatalogues($locale);
     }
 
-    private function initializeCacheCatalogue(string $locale): void
-    {
-        if (isset($this->catalogues[$locale])) {
-            /* Catalogue already initialized. */
-            return;
-        }
+//    private function initializeCacheCatalogue(string $locale): void
+//    {
+//        if (isset($this->catalogues[$locale])) {
+//            /* Catalogue already initialized. */
+//            return;
+//        }
 
-        $this->assertValidLocale($locale);
-        $cache = $this->getConfigCacheFactory()->cache($this->getCatalogueCachePath($locale),
-            function (ConfigCacheInterface $cache) use ($locale) {
-                $this->dumpCatalogue($locale, $cache);
-            }
-        );
+//        $this->assertValidLocale($locale);
+//        $cache = $this->getConfigCacheFactory()->cache($this->getCatalogueCachePath($locale),
+//            function (ConfigCacheInterface $cache) use ($locale) {
+//                $this->dumpCatalogue($locale, $cache);
+//            }
+//        );
 
-        if (isset($this->catalogues[$locale])) {
-            /* Catalogue has been initialized as it was written out to cache. */
-            return;
-        }
+//        if (isset($this->catalogues[$locale])) {
+//            /* Catalogue has been initialized as it was written out to cache. */
+//            return;
+//        }
 
-        /* Read catalogue from cache. */
-        $this->catalogues[$locale] = include $cache->getPath();
-    }
+//        /* Read catalogue from cache. */
+//        $this->catalogues[$locale] = include $cache->getPath();
+//    }
 
-    private function dumpCatalogue(string $locale, ConfigCacheInterface $cache): void
-    {
-        $this->initializeCatalogue($locale);
-        $fallbackContent = $this->getFallbackContent($this->catalogues[$locale]);
+//    private function dumpCatalogue(string $locale, ConfigCacheInterface $cache): void
+//    {
+//        $this->initializeCatalogue($locale);
+//        $fallbackContent = $this->getFallbackContent($this->catalogues[$locale]);
 
-        $content = sprintf(<<<EOF
-<?php
+//        $content = sprintf(<<<EOF
+//<?php
 
-use Symfony\Component\Translation\MessageCatalogue;
+//use Symfony\Component\Translation\MessageCatalogue;
 
-\$catalogue = new MessageCatalogue('%s', %s);
+//\$catalogue = new MessageCatalogue('%s', %s);
 
-%s
-return \$catalogue;
+//%s
+//return \$catalogue;
 
-EOF
-            ,
-            $locale,
-            var_export($this->getAllMessages($this->catalogues[$locale]), true),
-            $fallbackContent
-        );
+//EOF
+//            ,
+//            $locale,
+//            var_export($this->getAllMessages($this->catalogues[$locale]), true),
+//            $fallbackContent
+//        );
 
-        $cache->write($content, $this->catalogues[$locale]->getResources());
-    }
+//        $cache->write($content, $this->catalogues[$locale]->getResources());
+//    }
 
     private function getFallbackContent(MessageCatalogue $catalogue): string
     {
@@ -394,7 +394,11 @@ EOF
     protected function computeFallbackLocales(string $locale)
     {
         if (null === $this->parentLocales) {
-            $this->parentLocales = json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
+            if (defined('__BPC__')) {
+                $this->parentLocales = json_decode(resource_get_contents(__DIR__.'/Resources/data/parents.json'), true);
+            } else {
+                $this->parentLocales = json_decode(file_get_contents(__DIR__.'/Resources/data/parents.json'), true);
+            }
         }
 
         $locales = [];
@@ -448,14 +452,14 @@ EOF
      * Provides the ConfigCache factory implementation, falling back to a
      * default implementation if necessary.
      */
-    private function getConfigCacheFactory(): ConfigCacheFactoryInterface
-    {
-        if (!$this->configCacheFactory) {
-            $this->configCacheFactory = new ConfigCacheFactory($this->debug);
-        }
+//    private function getConfigCacheFactory(): ConfigCacheFactoryInterface
+//    {
+//        if (!$this->configCacheFactory) {
+//            $this->configCacheFactory = new ConfigCacheFactory($this->debug);
+//        }
 
-        return $this->configCacheFactory;
-    }
+//        return $this->configCacheFactory;
+//    }
 
     private function getAllMessages(MessageCatalogueInterface $catalogue): array
     {

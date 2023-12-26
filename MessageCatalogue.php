@@ -253,7 +253,7 @@ class MessageCatalogue implements MessageCatalogueInterface, MetadataAwareInterf
     /**
      * {@inheritdoc}
      */
-    public function addResource(ResourceInterface $resource)
+    public function addResource(/*ResourceInterface */$resource)
     {
         $this->resources[$resource->__toString()] = $resource;
     }

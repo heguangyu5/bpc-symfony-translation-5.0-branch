@@ -1,3 +1,10 @@
+# BPC Notes: How to make?
+
+```shell
+make libsymfony-component-translation.so && sudo make install-libsymfony-component-translation
+sudo ldconfig
+```
+
 Translation Component
 =====================
 

@@ -14,6 +14,10 @@ namespace Symfony\Component\Translation\Formatter;
 use Symfony\Component\Translation\Exception\InvalidArgumentException;
 use Symfony\Component\Translation\Exception\LogicException;
 
+if (defined('__BPC__')) {
+    require __DIR__ . '/Polyfill-Intl-MessageFormatter.php';
+}
+
 /**
  * @author Guilherme Blanco <guilhermeblanco@hotmail.com>
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
